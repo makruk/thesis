@@ -44,7 +44,7 @@
 \subsection{目的}
 本研究は，ソフトウェア開発の上流工程において，特にユーザビリティに関する問題の発見を支援することを目的とする．上流工程でユーザビリティの評価を行う手法は存在する\footnote[1]{入力保存機能に着目したモデル駆動ユーザビリティ評価法の提案と評価}が，利用に対する障壁が大きい．
 
-上流工程で発生した問題を早期に発見するために，入力保存機能に着目したモデル駆動ユーザビリティ評価法の提案と評価\footnotemark[1]で提案されているシナリオの作成支援を行う．
+上流工程で発生した問題を早期に発見するために，入力保存機能に着目したモデル駆動ユーザビリティ評価法の提案と評価(以下，「適用する手法」)\footnotemark[1]で提案されているシナリオの作成支援を行う．
 
 \subsection{論文の構成}
 第二章では適用する手法に関する語句を説明する．第三章では関連研究について述べる．第四章では手法の説明を行い，第五章では評価について述べる．第六章ではまとめと今後の課題について述べる．
@@ -58,10 +58,10 @@
 \allowbreak
 記法について説明する．画面 (Screen) はクラスとして表され，名前 (Screen.name) 及び操作項目 (OperatableItem) を持つ．操作項目は名前及びユーザー意図 (OperatableItem.ui) を持ち，遷移 (Transition) と入力項目 (InputItem) に分かれる．遷移は対象の画面を持つ．入力項目には入力型 (InputType) があり，入力された値の保存範囲を持つ．また，平均入力量 (metricsOfUserEffort.avg) と一画面入力限度数 (metricsOfUserEffort.upto) を持つ．入力項目は文字列入力 (InputText)，単一選択(SingleSelection)，複数選択(MultipleSelection)に分かれる．
 
-ユーザー意図はユーザーが画面遷移する動機を表し，作成 (Create)，閲覧 (Browse)，更新 (Update)，削除 (Delete)，取消 (Cancel)の5つに分けられる．また，ユーザー意図は操作対象画面 (UserIntention.ots) を持つ．これはユーザー意図の対象となる画面を表し，操作対象が遷移先でない場合に明示される．
+ユーザー意図はユーザーが画面遷移する動機を表し，作成 (Create)，閲覧 (Browse)，更新 (Update)，削除 (Delete)，取消 (Cancel)の5種類に分けられる．また，ユーザー意図は操作対象画面 (UserIntention.ots) を持つ．これはユーザー意図の対象となる画面を表し，操作対象が遷移先でない場合に明示される．
 
 \subsection{画面インスタンス}
-画面インスタンスとは，画面 (Screen) のインスタンスで，各画面で入力された値が格納される．これには以下の6つの拡張記法が定義されている．
+画面インスタンスとは，画面 (Screen) のインスタンスで，各画面で入力された値が格納される．これには以下の6個の拡張記法が定義されている．
 
 \begin{description}
   \item[\texttt{<<delete>>}]{画面インスタンス名に対する拡張記法．画面インスタンスが削除されたことを示す．}
@@ -78,10 +78,26 @@
 \section{関連研究}
 
 \section{提案手法}
-本研究で作成したツールでは，画面遷移モデルを解釈して対象のシステムをシミュレートし，開発者が実際に操作してシナリオを作成する．これにより，以下の二つの効果を期待する．一つは，拡張記法をツールが補完することで，手法を熟知していなくても正しいシナリオを記述できる効果．もう一つは，ツールが以前入力した内容を記憶することで，入力量を減らす効果である．
+本研究では，シナリオの作成支援ツール(以下，「本支援ツール」)を実装した．本支援ツールは，プラグインにより拡張可能であり，適用する手法が利用していることから，astah*を利用した．また，astah* Plug-inはJavaで記述する必要があるため，実装はJavaで行い，GUI部品の表示はswing，awtを利用した．
+
+本支援ツールは画面遷移モデルを解釈して対象のシステムをシミュレートし，開発者が実際に操作してシナリオを作成する．すなわち，webブラウザのように画面遷移モデルをブラウジングし，入力した値を基にシナリオを作成する．
+
+図\ref{fig:wholeOfSupportSystem}に本支援ツールの構造を示す．
+
+本支援ツールのエントリーポイントはSupportSystemである．このクラスはシナリオ作成全体の状態を持ち，各クラスを初期化する．また，GUIを実際に描画する部分も担う．
+
+本支援ツールの利用により，以下の二つの効果を期待する．一つは，拡張記法をツールが補完することで，手法を熟知していなくても正しいシナリオを記述できる効果．もう一つは，ツールが以前入力した内容を記憶することで，入力量を減らす効果である．
 
 \subsection{画面遷移モデルの解釈}
-対象のシステムをシミュレートするために，画面遷移モデルを解釈する．
+対象のシステムをシミュレートするため，画面遷移モデルを解釈し，Screen（画面）からGUIを構成する．ScreenはOperatableItemを保持しており，これはGUI部品に相当する．OperatableItemの実体はTransition（遷移）もしくはInputItem（入力項目）である．従って，Transitionには操作可能なGUI部品を，InputItemには入力可能なGUI部品を割り当てる．本支援ツールではTransitionがButtonComponentに，InputItemがInputComponentに対応している(図\ref{fig:component_inputItem})．
+
+ButtonComponentは操作可能なボタンとして扱われる．また，内部的にはTransitionの他にUserIntentionを持つ．これはどのような意図を持って画面遷移を行ったかを示すもので，シナリオの構成に必要な情報である．さらに，ButtonComponentは押されたとき，Browserへ押されたことを通知する．これにより，画面遷移を実現する．
+
+InputComponentは複数のGUI部品の集合として扱われる．なぜなら，内部に複数のInputItemInterface（入力項目）を持つためである．これはInputType及びInputItemInstanceに相当し，入力方法の指定，値の格納を担う．これにより，特定の画面内の一種類の項目に対して複数の値の格納が可能になる(図\ref{fig:inputComponent})．また，入力項目を追加するボタン，指定入力項目を削除するボタンもInputComponentに格納される．
+
+InputItemInterfaceはInputTypeに従い，三種類の．InputTextComponent（文字列入力）はInputTextに対応し，文字列入力可能な部品として扱われる．MultipleSelectionComponent（複数選択）はMultipleSelectionに対応し，選択及び文字列入力可能な部品として扱われる．SingleSelectionComponent（単一選択）はSingleSelectionに対応し，選択及び文字列入力可能な部品として扱われる．
+
+GUIの構成はComponentManagerが担う．ComponentManagerはGUI部品としてButtonComponent及びInputComponentを持ち，
 
 \subsection{シナリオ作成に必要な要素}
 \subsection{シナリオの導出}
