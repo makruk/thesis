@@ -1,0 +1,89 @@
+システムの全容
+  SupportSystem has ScenarioCreator and Browser and AbstractModelListener
+    Browser has ComponentManager and History
+      ComponentManager has InputComponent and ButtonComponent
+        InputComponent has InputItemInterface
+シナリオ作成の概略
+  初期状態→Precondition設定→[シナリオ作成]→シナリオ構成(Automatic)→初期状態
+要素
+  ComponentManager
+    Screenからコンポーネントを生成する
+    Screenに一致する．要素→(InputComponent, ButtonComponent)
+      InputComponent
+        InputItemと対応
+        InputItemInstanceと同等の役割
+        MetricsOfUserEffortを持つ
+        InputItemInterface
+          InputTypeに対応
+
+          単一選択，複数選択，文字列入力を持つ
+      ButtonComponent
+        Transitionと対応
+        UserIntentionを持つ
+        押されたとき，Browserへ通知する
+  Browser
+    ComponentManagerを介してScreenを表示する
+    ComponentManagerで入力された内容をHistoryに保存する
+    ButtonComponent(Transition)から通知を受け，遷移を決定する
+  History
+    履歴を持ち，Undo/Redoを可能とする．
+    シナリオを作成する際の基とする
+    ScreenStateを持つ
+      入力された値
+      インスタンス名
+      基画面
+      入ったときの意図，出るときの意図
+      対象となる画面
+  ScenarioCreator
+    Historyを基にシナリオを作成する
+    AbstractModelEditorを持つ
+      パッケージの作成
+      オブジェクト図の作成
+      インスタンスの作成
+      AstahModelEditorで実現化される
+  AbstractModelListener
+    ユーザーからの操作についてのリスナー
+    using->precondition設定．
+
+  前提
+    Browserが，表示するScreenを指定する
+  モデルの解釈
+    ComponentManagerが担う
+    javaのswing/awtを用いる
+    InputComponent
+      InputItemInterfaceについて
+    ButtonComponent
+      Browserへのnotify
+
+  画面インスタンスの拡張記法
+    <<cancel>>
+    <<delete>>
+    <<update>>
+    <<destination>>
+    \,
+    \a
+
+  手法説明
+    クラス図を最初に提示して，順を追って説明することを明記
+    Browserについて(主に)
+    ComponentManager，ScenarioCreator，Historyの概略
+  画面遷移モデルの解釈
+    ComponentManager，Input/ButtonComponent
+    InputItemInterface
+  シナリオの作成に必要なもの
+    シナリオ作成の概略もここ
+      precondition
+    シナリオ作成のためには履歴(History)情報が必要
+      Intention
+      入力された値
+      対象の画面インスタンス
+      linkToについて
+      ScreenStateに付いてもここ
+  シナリオの導出
+    ScenarioCreator
+    AbstractModeListener
+    操作履歴を用い，シナリオを作成する．
+    意図の変わり目はUpdateIntentionとCreateIntentionで判断する
+
+  評価
+    早く考えて書こう．
