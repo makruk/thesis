@@ -1,0 +1,50 @@
+構成を考える
+
+手法説明
+  astah/java/swing/awtを今回は使用
+  (クラス図を提示する)
+  エントリーポイントがSupportSystemであることを述べる
+  重要部分がBrowserであることを述べる
+    ComponentManagerを介してScreenを表示する
+    ComponentManagerで入力された内容をHistoryに保存する(詳細は後述)
+    ButtonComponent(Transition)から通知を受け，次の遷移を決定する
+
+画面遷移モデルの解釈
+  Screenからコンポーネントを生成する
+  Screenと対応するように作られている(InputComponent, ButtonComponent)
+    InputComponent
+      InputItemと対応
+      InputItemInstanceと同等の役割
+      MetricsOfUserEffortを持つ
+      InputItemInterface
+        InputTypeに対応
+        単一選択，複数選択，文字列入力を持つ
+    ButtonComponent
+      Transitionと対応
+      UserIntentionを持つ
+      押されたとき，Browserへ通知する
+
+シナリオ作成に必要なもの
+  シナリオ作成の概略
+    初期状態→Precondition設定→[シナリオ作成]→シナリオ構成(Automatic)→初期状態
+  preconditionの設定について
+    AbstractModelListener
+  Historyについて(詳解)
+    履歴を持ち，Undo/Redoを可能とする．
+    ScreenStateに付いてもここ
+    ScreenStateを持つ
+      入力された値
+      インスタンス名
+      基画面
+      入ったときの意図，出るときの意図
+      対象となる画面
+      
+シナリオの導出
+  ScenarioCreator
+    Historyを基にシナリオを作成する
+    AbstractModelEditorを持つ
+      パッケージの作成
+      オブジェクト図の作成
+      インスタンスの作成
+      AstahModelEditorで実現化される
+    意図の変わり目はUpdateIntentionとCreateIntentionで判断する
