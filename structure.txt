@@ -4,6 +4,8 @@
   astah/java/swing/awtを今回は使用
   (クラス図を提示する)
   エントリーポイントがSupportSystemであることを述べる
+  シナリオ作成の概略
+    初期状態→Precondition設定→[シナリオ作成]→シナリオ構成(Automatic)→初期状態
   重要部分がBrowserであることを述べる
     ComponentManagerを介してScreenを表示する
     ComponentManagerで入力された内容をHistoryに保存する(詳細は後述)
@@ -25,8 +27,6 @@
       押されたとき，Browserへ通知する
 
 シナリオ作成に必要なもの
-  シナリオ作成の概略
-    初期状態→Precondition設定→[シナリオ作成]→シナリオ構成(Automatic)→初期状態
   preconditionの設定について
     AbstractModelListener
   Historyについて(詳解)
