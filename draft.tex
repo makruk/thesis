@@ -287,10 +287,11 @@ ButtonComponentを配置する時，図\ref{fig:componentSS}の「次の画面へ進む」のように
 
 \subsection{シナリオの導出}
 \label{sec:createScenario}
-
+[label aboutHistoryの内容を含める?]
+[シナリオの作成手順をこれの後にする?　あと、シナリオの作成手順にはユーザー側の操作のみを記述し、シナリオの導出に内部的な動作を含める?]
 最後に，シナリオを導出する．これは本ツールが自動で行う．また，実際にオブジェクト図を操作する必要があるため，AstahModelEditorを使用する．
 
-導出にはHistoryとPreconditionを用いる．以下に導出の手順を示す．
+シナリオを導出する際，入力された具体値と遷移意図が格納されたHistoryと，シナリオを開始する前の状態を表した画面インスタンスの集合であるPreconditionを用いる．以下に導出の手順を示す．
 
 最初に，Preconditionを生成する．これには与えられたPreconditionをすべてオブジェクト図に書き出す．
 
@@ -300,7 +301,7 @@ ButtonComponentを配置する時，図\ref{fig:componentSS}の「次の画面へ進む」のように
 
 また，意図の変わり目は意図Createによる遷移と意図Updateによる遷移の間にあると考えた[要検証]．そこで，意図Createによる遷移の後を状態Createとし，意図Updateによる遷移の後を状態Updateして，状態が変化したときを意図の変わり目とした．また，初期状態は最初に行われた意図Createもしくは意図Updateの遷移により決定する．
 
-Intentionの生成と並行し，Postconditionを生成する．Postconditionは最終的なシナリオの状態なので，Preconditionと各Intentionを合成したものになる．そのため，Intentionと同時に生成し，オブジェクト図に書き出す．
+Intentionの生成と並行し，Postconditionを生成する．Postconditionは最終的なシナリオの状態で，Preconditionと各Intentionを合成したものになる．そのため，Intentionと同時に生成し，オブジェクト図に書き出す．
 
 最後にEndを生成する．Historyの最後の要素をオブジェクト図に書き出す．
 
