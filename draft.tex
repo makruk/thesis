@@ -1,6 +1,8 @@
 \documentclass[a4paper, 12pt]{jsarticle}
 \usepackage[dvipdfmx]{graphicx}
 \usepackage{endnotes}
+\usepackage{subfigure}
+
 \renewcommand{\theendnote}{[\arabic{endnote}]}
 \renewcommand{\notesname}{参考文献}
 \usepackage{etoolbox}
@@ -48,9 +50,9 @@
 
 しかし，この手法に必要なモデルを手動で作成することは負担が大きい．以下に既知の問題点を示す．
 \begin{itemize}
-  \item 記述量が多い．類似した，あるいは同一の値を複数入力することがある．
-  \item 拡張記法が多く，正しくシナリオを作成するには拡張記法の理解が必要．
-  \item 構成が複雑である．シナリオが正しく書かれていないと正しい評価が不可能になる．
+  \item モデルを作成する際，記述する値が多い．類似した，あるいは同一の値を複数入力することがある．
+  \item モデルに定義されている拡張記法が多い．正しくシナリオを作成するため，拡張記法の理解が必要である．
+  \item シナリオの構成が複雑である．シナリオが正しく書かれてい場合，正しい評価が不可能になる．
 \end{itemize}
 
 これらように，入力保存機能に着目したモデル駆動ユーザビリティ評価法の提案と評価\endnotemark[1](以下，「対象手法」)は利用する際の難度が高い．手法の難度が高い場合，実際の開発では適用されない可能性が高くなる．
@@ -60,13 +62,13 @@
 
 対象手法の問題点および本研究における解決方針を述べる．
 
-第一に，シナリオを作成する際，大量の値を入力する必要がある．このとき，入力する値の中には同一のものや類似しているものがあり，容易に補完できる．従って，入力された値をツールが記憶し，必要な場所で自動入力する．これにより，値の入力量を低減させる．
+第一に，シナリオを作成する際，大量の値を入力する必要がある．シナリオには各画面で入力される値が記述される．このとき，同じ画面に対する入力には同一のものや類似しているものがあり，容易に補完できる．従って，入力された値をツールが記憶し，必要な場所で自動入力する．これにより，シナリオを作成する際の入力量を低減させる．
 
 第二に，拡張記法が多い．対象手法はUMLを拡張しており，手法に不慣れな場合正しく記述できない．これに対して，拡張記法をツールが補完し，手法に不慣れな人のシナリオ作成を補助する．
 
-第三に，シナリオの構成が複雑である．対象手法は五個以上のオブジェクト図を正しく記述しなければならない．本研究では，オブジェクト図への記述をツールが行い，手法を利用する人（以下，「開発者」）の負担を軽減する．
+第三に，シナリオの構成が複雑である．対象手法ではシナリオをオブジェクト図に記述する．記述するオブジェクト図は五種類存在し，正しく記述する必要がある．本研究では，オブジェクト図への記述をツールが行い，手法を利用する人（以下，「開発者」）の負担を軽減する．
 
-また，本研究の評価として実際にツールを使用し，正しいシナリオを記述可能か検証を行う．
+また，本研究の評価として実際にツールを使用した実験を行う．シナリオの作成にかかった時間と，作成されたシナリオに含まれる誤りを計測し，ツールの有効性の検証を行う．
 
 \subsection{論文の構成}
 第二章では対象手法\endnotemark[1]に関する語句を説明する．第三章では関連研究について述べる．第四章では手法の説明を行い，第五章では評価について述べる．第六章ではまとめと今後の課題について述べる．
@@ -76,7 +78,7 @@
 \section{用語説明}
 \subsection{画面遷移モデル}
 \label{sec:aboutScreenTransitionModel}
-画面遷移モデルとは，システム上の画面間の遷移を定義するモデルである．本研究ではこれに基づいてシナリオの作成支援を行う．
+画面遷移モデルとは，システム上の画面間の遷移を定義するモデルである\endnotemark[1]．本研究ではこれに基づいてシナリオの作成支援を行う．
 
 対象手法ではクラス図上に画面および遷移が記述される(図\ref{fig:transitionModel})．画面遷移モデルの記法を定義するメタモデルを図\ref{fig:transitionMetaModel}に示す．
 
@@ -121,20 +123,22 @@
 また，これには以下の六種類の拡張記法が定義されている．
 
 \begin{description}
-  \item[\texttt{<<delete>>}]{画面インスタンスが削除されたことを示す．}
-  \item[\texttt{<<update>>}]{画面インスタンスが更新されたことを示す．}
-  \item[\texttt{<<cancel>>}]{入力された値が取り消されたことを示す．}
-  \item[\texttt{<<destination>>}]{意図の中で最後に到達する画面インスタンスであることを示す．}
-  \item[\texttt{\symbol{92}}a]{入力値および画面インスタンス名に対する拡張記法．入力値がシステムによる自動入力であることを示す．}
-  \item[\texttt{\symbol{92}},]{入力値に対する拡張記法．一つの項目に対して複数の値を入力する際に用いる．}
+  \item[\texttt{<<delete>>}]{画面インスタンス名の接頭．画面インスタンスが削除されたことを示す．}
+  \item[\texttt{<<cancel>>}]{画面インスタンス名の接頭．入力された値が取り消されたことを示す．}
+  \item[\texttt{<<destination>>}]{画面インスタンス名の接頭．意図の中で最後に到達する画面インスタンスであることを示す．(図\ref{fig:SI_dist})}
+  \item[\texttt{\symbol{92}}a]{入力値および画面インスタンス名の接尾．入力値がシステムによる自動入力であることを示す．(図\ref{fig:SI_a})}
+  \item[\texttt{\symbol{92}},]{入力値に対する拡張記法．一つの項目に対して複数の値を入力する際に用いる．(図\ref{fig:SI_multi})}
 \end{description}
 
-正しいシナリオを作成するには，拡張記法を適切に記述する必要がある．本研究では記述の誤りを防ぐため，ツールによる拡張記法の自動補完を行う．
+正しいシナリオを作成するには，拡張記法を適切に記述する必要がある．画面インスタンス名の接頭は図\ref{fig:screenInstance}の
+
+本研究では記述の誤りを防ぐため，ツールによる拡張記法の自動補完を行う．
 
 \begin{figure}[htbp]
-  \begin{center}
-    \includegraphics[width=6cm]{img/screenInstance.eps}
-  \end{center}
+  \subfigure[拡張記法なし]{\includegraphics[width=0.5\columnwidth]{img/screenInstance.eps}\label{fig:SI_normal}}
+  \subfigure[意図の中で最後に到達する画面]{\includegraphics[width=0.5\columnwidth]{img/screenInstance.eps}\label{fig:SI_dist}}
+  \subfigure[システムによる自動入力]{\includegraphics[width=0.5\columnwidth]{img/screenInstance.eps}\label{fig:SI_a}}
+  \subfigure[複数値]{\includegraphics[width=0.5\columnwidth]{img/screenInstance.eps}\label{fig:SI_multi}}
   \caption{画面インスタンス}
   \label{fig:screenInstance}
 \end{figure}
@@ -176,8 +180,8 @@ astah* Plug-inは，astah*に機能を追加する仕組みである．本ツールでは，astah* Plug-
 \begin{center}
 \includegraphics[width=14cm]{img/wholeOfSupportSystem.eps}
 \caption{シナリオの作成支援ツール構造}
-\end{center}
 \label{fig:wholeOfSupportSystem}
+\end{center}
 \end{figure}
 
 \begin{description}
